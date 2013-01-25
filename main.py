@@ -24,24 +24,34 @@ while True:
      ## move reticule between enemies
       if event.key == K_UP:
         ##move reticule to nearest higher-level thug
+        pass
       if event.key == K_DOWN:
         ##move reticule to nearest lower-level thug
+        pass
       if event.key == K_LEFT:
         ##move reticule to nearest thug to the left
+        pass
       if event.key == K_RIGHT:
         ##move reticule to neartest thug to the right
+        pass
      ## move left, right, ladders
       if event.key == K_w:
         ##climb a ladder up
+        pass
       if event.key == K_s:
         ##climb a ladder down
+        pass
       if event.key == K_a:
         ##move left
+        pass
       if event.key == K_d:
         ##move right
+        pass
      ##combat 
       if event.key == K_LSHIFT:
         ##shoot
+        pass
       if event.key == K_SPACE:
 	##heart jump
+        pass
 
