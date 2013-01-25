@@ -4,10 +4,10 @@ from pygame.locals import *
 
 ##initialization
 pygame.init()
-fps = pygame.time.Clock()
+fpsClock = pygame.time.Clock()
 aimingReticuleSurfaceObj = pygame.image.load('reticule.png')
 windowSurfaceObj = pygame.display.set_mode((800, 600))
-pygame.display.set('Heartless Killer')
+pygame.display.set_caption('Heartless Killer')
 mousex, mousey = 0, 0
 
 
