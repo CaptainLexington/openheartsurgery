@@ -55,3 +55,7 @@ while True:
 	##heart jump
         pass
 
+
+  ##Framerate control
+  pygame.display.update()
+  fpsClock.tick(30)
