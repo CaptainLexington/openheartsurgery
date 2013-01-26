@@ -9,8 +9,10 @@ windowSurfaceObj=None
 ##initialization
 def init():
   pygame.init()
-  global aimingReticuleSurfaceObj
-  aimingReticuleSurfaceObj= pygame.image.load('assets/gangstersheet.png')
+  global reticuleSprite
+  reticuleSprite = pygame.image.load('assets/reticule.png')
+  global gangsterSprite
+  gangsterSprite= pygame.image.load('assets/gangstersheet.png')
   global windowSurfaceObj
   windowSurfaceObj = pygame.display.set_mode((800, 600))
   global background
@@ -22,13 +24,26 @@ def init():
 def game_loop():
   global windowSurfaceObj
   fpsClock=pygame.time.Clock()
-  chuck=gangster.gangster(aimingReticuleSurfaceObj)
+  gang = []
+  tempx = 10
+  for g in range(5):
+    gang.append(gangster.gangster(gangsterSprite, tempx))
+    tempx += 100
+  gang[0].pc = True
+  player = filter(lambda g: g.pc == True, gang)[0]
   mousex, mousey = 600,200
   while True:
+    
+    #Housekeeping
+
+
+    #Drawing control
     #windowSurfaceObj.fill(pygame.Color(255,255,255))
     windowSurfaceObj.blit(background,(0,0))
-    chuck.draw(windowSurfaceObj)
-	
+    for g in gang:
+      g.draw(windowSurfaceObj)
+    
+    #Event control
     for event in pygame.event.get():
       if event.type == QUIT:
         pygame.quit()
@@ -56,10 +71,10 @@ def game_loop():
           pass
         if event.key == K_a:
           #move left
-          chuck.setVelocity(-5)
+            player.setVelocity(-5)
         if event.key == K_d:
           #move right
-          chuck.setVelocity(5)
+            player.setVelocity(5)
         #combat 
         if event.key == K_LSHIFT:
           #shoot
@@ -90,10 +105,10 @@ def game_loop():
           pass
         if event.key == K_a:
           #move left
-          chuck.setVelocity(0)
+            player.setVelocity(5)
         if event.key == K_d:
           #move right
-          chuck.setVelocity(0)
+            player.setVelocity(-5)
          #combat 
         if event.key == K_LSHIFT:
           #shoot
