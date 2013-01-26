@@ -8,10 +8,9 @@ class reticule:
 
   def setTarget(self, newTarget):
     self.target = newTarget
-    self.x = newTarget.x
 
   def draw(self, window):
-    window.blit(self.sprite, (self.target.x, 100))
+    window.blit(self.sprite, (self.target.x + 15, self.target.y + 25))
 
  # def heartJumpCheck(self):
  #   closeX = (self.target.x - gangster.player.x) < 100
@@ -22,18 +21,21 @@ class reticule:
   def moveLeft(self, gang):
     targets = filter(lambda g: ((g.tier == gang.player.tier) and (g.x < self.target.x)), gang.badguys)
     if len(targets) == 0:
+        print 0
         minGuy = self.target
     elif len(targets) == 1:
+        print 1, targets[0].x
         minGuy = targets[0]
     else:
       minGuy = targets[0]
-      minVal = targets[0].x - self.target.x
+      minVal = abs(targets[0].x - self.target.x)
       for g in targets:
-        temp = g.x - self.target.x
+        temp = abs(g.x - self.target.x)
         if temp < minVal:
           minVal = temp
           minGuy = g
-      self.setTarget(minGuy)
+      print "else",minGuy.x
+    self.setTarget(minGuy)
  
   def moveRight(self, gang):
     targets = filter(lambda g: ((g.tier == gang.player.tier) and (g.x > self.target.x)), gang.badguys)
@@ -43,13 +45,13 @@ class reticule:
         minGuy = targets[0]
     else:
       minGuy = targets[0]
-      minVal = targets[0].x - self.target.x
+      minVal = abs(targets[0].x - self.target.x)
       for g in targets:
-        temp = g.x - self.target.x
+        temp = abs(g.x - self.target.x)
         if temp < minVal:
           minVal = temp
           minGuy = g
-      self.setTarget(minGuy)
+    self.setTarget(minGuy)
 
   def moveUp(self, gang):
     if gang.player.tier == gangster.Tier.Street:
@@ -60,13 +62,13 @@ class reticule:
         minGuy = targets[0]
       else:
         minGuy = targets[0]
-        minVal = targets[0].x - self.target.x
+        minVal = abs(targets[0].x - self.target.x)
         for g in targets:
-          temp = g.x - self.target.x
+          temp = abs(g.x - self.target.x)
           if temp < minVal:
             minVal = temp
             minGuy = g
-      self.setTarget(minGuy)
+    self.setTarget(minGuy)
 
   def moveDown(self, gang):
     if gang.player.tier == gangster.Tier.Rooftops:
@@ -77,13 +79,13 @@ class reticule:
         minGuy = targets[0]
       else:
         minGuy = targets[0]
-        minVal = targets[0].x - self.target.x
+        minVal = abs(targets[0].x - self.target.x)
         for g in targets:
-          temp = g.x - self.target.x
+          temp = abs(g.x - self.target.x)
           if temp < minVal:
             minVal = temp
             minGuy = g
-      self.setTarget(minGuy)
+    self.setTarget(minGuy)
  
  
 
