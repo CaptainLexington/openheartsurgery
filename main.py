@@ -3,13 +3,14 @@
 import pygame, sys, gangster, reticule, bg
 from pygame.locals import *
 
-aimingReticuleSurfaceObj=None
 background=None
 windowSurfaceObj=None
 
 ##initialization
 def init():
   pygame.init()
+  global reticuleHeartSprite
+  reticuleHeartSprite = pygame.image.load('assets/reticuleheart.png')
   global reticuleSprite
   reticuleSprite = pygame.image.load('assets/reticule.png')
   global windowSurfaceObj
@@ -24,7 +25,7 @@ def game_loop():
   global windowSurfaceObj
   fpsClock=pygame.time.Clock()
   gang = gangster.gang()
-  ret = reticule.reticule(reticuleSprite, gang)
+  ret = reticule.reticule(reticuleHeartSprite, reticuleSprite, gang)
   mousex, mousey = 600,200
   while True:
     
@@ -37,7 +38,7 @@ def game_loop():
     for g in gang.characters:
       g.move(background)
       g.draw(windowSurfaceObj)
-    ret.draw(windowSurfaceObj)
+    ret.draw(windowSurfaceObj,gang)
     
     #Event control
     for event in pygame.event.get():
@@ -107,8 +108,7 @@ def game_loop():
           pass
         if event.key == K_SPACE:
       #heart jump
-          pass
-
+          ret.heartJump(gang)
 
   ##Framerate control
     pygame.display.update()

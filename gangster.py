@@ -82,7 +82,8 @@ class gang:
     self.player = filter(lambda g: g.pc, self.characters)[0]
     self.badguys = filter(lambda g: g.alive and not g.pc, self.characters)
 
-  def changePlayerCharacter(targetID):
+  def changePlayerCharacter(self,target):
     self.player.pc = False
-    self.characters[targetID].pc = True
-    self.player = gang[TargetID]
+    self.player = target
+    target.pc = True
+    self.badguys.remove(target)
