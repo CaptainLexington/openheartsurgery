@@ -61,9 +61,9 @@ class gangster:
         self.frame=0
       if self.facing == Facing.Right:
         self.frame=8
-    elif self.frame == 0:
+    elif self.facing == Facing.Left:
       self.frame+=1
-      if self.frame>20:
+      if self.frame > 20:
         self.frame = 20
     else:
       self.frame-=1
