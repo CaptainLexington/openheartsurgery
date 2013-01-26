@@ -1,4 +1,8 @@
-import pygame
+import pygame, sys
+
+
+global gangsterSprite
+gangsterSprite= pygame.image.load('assets/gangstersheet.png')
 
 class Facing:
   Left, Right, Back = range(3)
@@ -45,3 +49,20 @@ class gangster:
   def draw(self,window):
     tmpsurface=self.sprite.subsurface(self.clips[self.frame/2])
     window.blit(tmpsurface,(self.move(),(500-self.tier*100)))
+
+
+class gang:
+  def __init__(self):
+    self.characters = []
+    tempx = 10
+    for g in range(5):
+      self.characters.append(gangster(gangsterSprite, tempx))
+      tempx += 100
+    self.characters[0].pc = True
+    self.player = filter(lambda g: g.pc, self.characters)[0]
+    self.badguys = filter(lambda g: g.alive and not g.pc, self.characters)
+
+  def changePlayerCharacter(targetID):
+    self.player.pc = False;
+    self.characters[targetID].pc = True;
+    self.player = gang[TargetID];

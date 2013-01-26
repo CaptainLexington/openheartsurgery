@@ -1,5 +1,5 @@
 ##imports
-import pygame, sys, gangster
+import pygame, sys, gangster, reticule
 from pygame.locals import *
 
 aimingReticuleSurfaceObj=None
@@ -11,8 +11,6 @@ def init():
   pygame.init()
   global reticuleSprite
   reticuleSprite = pygame.image.load('assets/reticule.png')
-  global gangsterSprite
-  gangsterSprite= pygame.image.load('assets/gangstersheet.png')
   global windowSurfaceObj
   windowSurfaceObj = pygame.display.set_mode((800, 600))
   global background
@@ -24,13 +22,8 @@ def init():
 def game_loop():
   global windowSurfaceObj
   fpsClock=pygame.time.Clock()
-  gang = []
-  tempx = 10
-  for g in range(5):
-    gang.append(gangster.gangster(gangsterSprite, tempx))
-    tempx += 100
-  gang[0].pc = True
-  player = filter(lambda g: g.pc == True, gang)[0]
+  gang = gangster.gang()
+  ret = reticule.reticule(reticuleSprite, gang)
   mousex, mousey = 600,200
   while True:
     
@@ -40,8 +33,9 @@ def game_loop():
     #Drawing control
     #windowSurfaceObj.fill(pygame.Color(255,255,255))
     windowSurfaceObj.blit(background,(0,0))
-    for g in gang:
+    for g in gang.characters:
       g.draw(windowSurfaceObj)
+    ret.draw(windowSurfaceObj)
     
     #Event control
     for event in pygame.event.get():
@@ -51,17 +45,13 @@ def game_loop():
       elif event.type == KEYDOWN:
         #move reticule between enemies
         if event.key == K_UP:
-          #move reticule to nearest higher-level thug
-          pass
+          ret.moveUp(gang)
         if event.key == K_DOWN:
-          #move reticule to nearest lower-level thug
-          pass
+          ret.moveDown(gang)
         if event.key == K_LEFT:
-          #move reticule to nearest thug to the left
-          pass
+          ret.moveLeft(gang)
         if event.key == K_RIGHT:
-          #move reticule to neartest thug to the right
-          pass
+          ret.moveRight(gang)
         #move left, right, ladders
         if event.key == K_w:
           #climb a ladder up
@@ -71,10 +61,10 @@ def game_loop():
           pass
         if event.key == K_a:
           #move left
-            player.setVelocity(-5)
+            gang.player.setVelocity(-5)
         if event.key == K_d:
           #move right
-            player.setVelocity(5)
+            gang.player.setVelocity(5)
         #combat 
         if event.key == K_LSHIFT:
           #shoot
@@ -105,10 +95,10 @@ def game_loop():
           pass
         if event.key == K_a:
           #move left
-            player.setVelocity(5)
+            gang.player.setVelocity(5)
         if event.key == K_d:
           #move right
-            player.setVelocity(-5)
+            gang.player.setVelocity(-5)
          #combat 
         if event.key == K_LSHIFT:
           #shoot
