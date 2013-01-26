@@ -1,5 +1,5 @@
 ##imports
-import pygame, sys, gangster
+import pygame, sys, gangster, bg
 from pygame.locals import *
 
 aimingReticuleSurfaceObj=None
@@ -16,7 +16,7 @@ def init():
   global windowSurfaceObj
   windowSurfaceObj = pygame.display.set_mode((800, 600))
   global background
-  background = pygame.image.load('assets/background.png')
+  background = bg.bg([1,0,3,2])
   pygame.display.set_caption('Heartless Killer')
 
 
@@ -39,8 +39,9 @@ def game_loop():
 
     #Drawing control
     #windowSurfaceObj.fill(pygame.Color(255,255,255))
-    windowSurfaceObj.blit(background,(0,0))
+    windowSurfaceObj.blit(background.get_bg(),(0,0))
     for g in gang:
+      g.move(background)
       g.draw(windowSurfaceObj)
     
     #Event control
@@ -65,16 +66,16 @@ def game_loop():
         #move left, right, ladders
         if event.key == K_w:
           #climb a ladder up
-          pass
+           player.setYVelocity(-3)
         if event.key == K_s:
           #climb a ladder down
-          pass
+           player.setYVelocity(3)
         if event.key == K_a:
           #move left
-            player.setVelocity(-5)
+            player.setXVelocity(-5)
         if event.key == K_d:
           #move right
-            player.setVelocity(5)
+            player.setXVelocity(5)
         #combat 
         if event.key == K_LSHIFT:
           #shoot
@@ -99,16 +100,16 @@ def game_loop():
         #move left, right, ladders
         if event.key == K_w:
           #climb a ladder up
-          pass
+            player.setYVelocity(3)
         if event.key == K_s:
            #climb a ladder down
-          pass
+            player.setYVelocity(-3)
         if event.key == K_a:
           #move left
-            player.setVelocity(5)
+            player.setXVelocity(5)
         if event.key == K_d:
           #move right
-            player.setVelocity(-5)
+            player.setXVelocity(-5)
          #combat 
         if event.key == K_LSHIFT:
           #shoot
