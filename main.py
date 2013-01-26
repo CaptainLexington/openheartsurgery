@@ -1,17 +1,16 @@
 ##imports
-import pygame, sys
+import pygame, sys, gangster
 from pygame.locals import *
 
 aimingReticuleSurfaceObj=None
 background=None
 windowSurfaceObj=None
 
-
 ##initialization
 def init():
   pygame.init()
   global aimingReticuleSurfaceObj
-  aimingReticuleSurfaceObj= pygame.image.load('assets/gangster1.png')
+  aimingReticuleSurfaceObj= pygame.image.load('assets/gangstersheet.png')
   global windowSurfaceObj
   windowSurfaceObj = pygame.display.set_mode((800, 600))
   global background
@@ -23,11 +22,12 @@ def init():
 def game_loop():
   global windowSurfaceObj
   fpsClock=pygame.time.Clock()
+  chuck=gangster.gangster(aimingReticuleSurfaceObj)
   mousex, mousey = 600,200
   while True:
     #windowSurfaceObj.fill(pygame.Color(255,255,255))
     windowSurfaceObj.blit(background,(0,0))
-    windowSurfaceObj.blit(aimingReticuleSurfaceObj, (mousex, mousey))
+    chuck.draw(windowSurfaceObj)
 	
     for event in pygame.event.get():
       if event.type == QUIT:
@@ -56,10 +56,10 @@ def game_loop():
           pass
         if event.key == K_a:
           #move left
-          pass
+          chuck.move(-5)
         if event.key == K_d:
           #move right
-          pass
+          chuck.move(5)
         #combat 
         if event.key == K_LSHIFT:
           #shoot
