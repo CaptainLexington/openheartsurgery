@@ -11,11 +11,11 @@ windowSurfaceObj=None
 def init():
   pygame.init()
   global aimingReticuleSurfaceObj
-  aimingReticuleSurfaceObj= pygame.image.load('gangster1.png')
+  aimingReticuleSurfaceObj= pygame.image.load('assets/gangster1.png')
   global windowSurfaceObj
   windowSurfaceObj = pygame.display.set_mode((800, 600))
   global background
-  background = pygame.image.load('background.png')
+  background = pygame.image.load('assets/background.png')
   pygame.display.set_caption('Heartless Killer')
 
 
