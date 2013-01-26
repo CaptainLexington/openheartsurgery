@@ -1,9 +1,10 @@
-import pygame, sys, gangster, random
+import pygame, sys, gangster, random, bg
 
 #global muzzleFlashSprite
 
 class reticule:
   def __init__(self, sprite1, sprite2, gang):
+    random.seed()
     self.setTarget(gang.badguys[0])
     self.canHeartJump = False
     self.sprite1 = sprite1 #Yes jump
@@ -95,3 +96,19 @@ class reticule:
     if gang.player.facing == gangster.Facing.Right:
       muzzleFlashSprite = pygame.transform.flip(muzzleFlashSprite, True, False)
     window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (gang.player.x - 10 + (gang.player.facing * 60), gang.player.y + 33 + random.randint(-1,1)))
+    
+  def shoot(self, gang, background):
+    if self.target==None:
+	return False
+    gang.player.shooting=True
+    damage = random.randint(0,4)
+    self.target.hp-=damage
+    background.tinysplatter(self.target.x,self.target.y)
+    if self.target.hp<1:
+      self.target.die()
+      gang.badguys.remove(self.target)
+      self.findTarget(gang)
+
+  def stop_shooting(self,gang):
+    gang.player.shooting=False
+    
