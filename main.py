@@ -2,24 +2,35 @@
 import pygame, sys
 from pygame.locals import *
 
+aimingReticuleSurfaceObj=None
+background=None
+windowSurfaceObj=None
+
+
 ##initialization
 def init():
   pygame.init()
-  fpsClock = pygame.time.Clock()
-  aimingReticuleSurfaceObj = pygame.image.load('reticule.png')
+  global aimingReticuleSurfaceObj
+  aimingReticuleSurfaceObj= pygame.image.load('gangster1.png')
+  global windowSurfaceObj
   windowSurfaceObj = pygame.display.set_mode((800, 600))
+  global background
+  background = pygame.image.load('background.png')
   pygame.display.set_caption('Heartless Killer')
-  mousex, mousey = 0, 0
 
 
 ##control loop
 def game_loop():
+  global windowSurfaceObj
+  fpsClock=pygame.time.Clock()
+  mousex, mousey = 600,200
   while True:
-    windowSurfaceObj.fill(whiteColor)
+    #windowSurfaceObj.fill(pygame.Color(255,255,255))
+    windowSurfaceObj.blit(background,(0,0))
     windowSurfaceObj.blit(aimingReticuleSurfaceObj, (mousex, mousey))
 	
     for event in pygame.event.get():
-      if event.type == QUIT():
+      if event.type == QUIT:
         pygame.quit()
         sys.exit()
       elif event.type == KEYDOWN:
@@ -55,7 +66,7 @@ def game_loop():
           pass
         if event.key == K_SPACE:
 	  #heart jump
-        pass
+          pass
 
 
   ##Framerate control
