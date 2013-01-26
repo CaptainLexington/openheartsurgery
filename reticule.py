@@ -1,4 +1,6 @@
-import pygame, sys, gangster
+import pygame, sys, gangster, random
+
+#global muzzleFlashSprite
 
 class reticule:
   def __init__(self, sprite1, sprite2, gang):
@@ -86,4 +88,10 @@ class reticule:
     if self.target==None and gang.player.tier != gangster.Tier.Sewer:
       targets=filter(lambda g: ((g.tier != gangster.Tier.Sewer)),gang.badguys)
       self.moveHelper(gang,targets)
-    
+
+  def muzzleFlash(self, gang, window):
+    clips = [pygame.Rect(0, 0, 15, 10), pygame.Rect(15, 0, 15, 10)]
+    muzzleFlashSprite = pygame.image.load("assets/muzzleflash.png")
+    if gang.player.facing == gangster.Facing.Right:
+      muzzleFlashSprite = pygame.transform.flip(muzzleFlashSprite, True, False)
+    window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (gang.player.x - 10 + (gang.player.facing * 60), gang.player.y + 33 + random.randint(-1,1)))

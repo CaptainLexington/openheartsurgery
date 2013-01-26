@@ -106,7 +106,6 @@ def game_loop():
          #combat 
         if event.key == K_LSHIFT:
           #shoot
-          pass
         if event.key == K_SPACE:
       #heart jump
 	  if ret.heartJumpCheck(gang):
