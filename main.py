@@ -36,7 +36,7 @@ def game_loop():
     #windowSurfaceObj.fill(pygame.Color(255,255,255))
     windowSurfaceObj.blit(background.get_bg(),(0,0))
     for g in gang.characters:
-      g.move(background)
+      g.move(background,windowSurfaceObj,gang)
       g.draw(windowSurfaceObj)
     gang.drawHeart(windowSurfaceObj)
     if gang.player.shooting:
