@@ -191,6 +191,7 @@ class gang:
     self.player.pc = False
     self.player = target
     target.pc = True
+    target.stop_shooting()
     self.heartTarget = target
     self.heartStep = (self.heartTarget.x - self.heartX)/10
     self.heartAirborne = True
