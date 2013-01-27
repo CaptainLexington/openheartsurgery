@@ -138,4 +138,3 @@ class reticule:
     gang.player.shooting=False
     if gang.player.channel!=None:
       gang.player.channel.fadeout(300)
-      gang.player.channel=None

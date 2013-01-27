@@ -140,13 +140,13 @@ class gangster:
       background.tinysplatter(shootee.x,shootee.y)
       if shootee.hp<1:
         shootee.die()
-        shooter.channel.queue(sound.failSplatSound)
+        if shooter.channel!=None:
+          shooter.channel.queue(sound.failSplatSound)
 
   def stop_shooting(self):
     self.shooting=False
     if self.channel!=None:
       self.channel.fadeout(300)
-      self.channel=None
 
   def notice (self,player):
     if self.tier==player.tier and abs(self.x-player.x)<75:
