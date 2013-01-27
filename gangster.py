@@ -140,6 +140,7 @@ class gangster:
       background.tinysplatter(shootee.x,shootee.y)
       if shootee.hp<1:
         shootee.die()
+        shooter.channel.queue(sound.failSplatSound)
 
   def stop_shooting(self):
     self.shooting=False
@@ -161,6 +162,7 @@ class gangster:
     #self.dying = True
     self.frame = 0
     self.x = self.x - 30 + (self.facing * 30) 
+    sound.bodyThumpSound.play()
     if self.facing == Facing.Right:
       self.sprite = pygame.transform.flip(self.sprite, True, False)
       self.frame = 30
