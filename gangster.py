@@ -1,4 +1,4 @@
-import pygame, sys, bg, random
+import pygame, sys, bg, random, sound
 
 
 global gangsterSprite
@@ -35,6 +35,7 @@ class gangster:
     self.xvelocity=0
     self.yvelocity=0
     self.sprite=sprite
+    self.channel=None
   
   def setXVelocity(self, velocity):
     self.xvelocity+=velocity
@@ -125,10 +126,12 @@ class gangster:
 
   def shoot_general(self,background,window,shooter,shootee):
     if shooter.ammos==0 or not shootee.alive or not shooter.can_affect(shootee):
-      shooter.shooting=False
+      self.stop_shooting()
       return False
     if (shootee.x>shooter.x and shooter.facing==Facing.Right) or (shootee.x<shooter.x and shooter.facing==Facing.Left):
-      shooter.shooting=True
+      if shooter.shooting==False:
+        shooter.shooting=True
+        shooter.channel=sound.machineGunSound.play()
       damage = random.randint(0,4)
       if damage > 2:
         self.muzzleFlash_general(window,shooter)
@@ -137,6 +140,12 @@ class gangster:
       background.tinysplatter(shootee.x,shootee.y)
       if shootee.hp<1:
         shootee.die()
+
+  def stop_shooting(self):
+    self.shooting=False
+    if self.channel!=None:
+      self.channel.fadeout(300)
+      self.channel=None
 
   def notice (self,player):
     if self.tier==player.tier and abs(self.x-player.x)<75:

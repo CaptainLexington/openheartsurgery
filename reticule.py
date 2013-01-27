@@ -1,4 +1,4 @@
-import pygame, sys, gangster, random, bg
+import pygame, sys, gangster, random, bg, sound
 
 #global muzzleFlashSprite
 
@@ -101,9 +101,12 @@ class reticule:
 
   def shoot(self, gang, background, window):
     if self.target==None or gang.player.ammos==0 or not gang.player.can_affect(self.target):
+        self.stop_shooting(gang)
 	return False
     self.makePresenceKnown(gang)
-    gang.player.shooting=True
+    if gang.player.shooting==False:
+      gang.player.shooting=True
+      gang.player.channel=sound.machineGunSound.play()
     damage = random.randint(0,4)
     if damage > 2:
       self.muzzleFlash(gang, window)
@@ -131,4 +134,6 @@ class reticule:
 
   def stop_shooting(self,gang):
     gang.player.shooting=False
-    
+    if gang.player.channel!=None:
+      gang.player.channel.fadeout(300)
+      gang.player.channel=None
