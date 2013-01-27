@@ -3,6 +3,8 @@ import pygame, sys, bg
 
 global gangsterSprite
 gangsterSprite= pygame.image.load('assets/gangstersheet.png')
+global gangsterDeathSprite
+gangsterDeathSprite = pygame.image.load('assets/gangsterdeathsheet.png')
 
 class Facing:
   Left, Right, Back = range(3)
@@ -15,6 +17,7 @@ class gangster:
   def __init__(self,sprite, x = 200, y=300):
     self.pc=False
     self.alive=True
+    #self.dying=False
     self.tier=Tier.Street
     self.x=x
     self.y=y
@@ -24,6 +27,8 @@ class gangster:
     self.facing=Facing.Left
     self.ammos=100
     self.clips=[pygame.Rect(0,0,50,75),pygame.Rect(50,0,50,75),pygame.Rect(100,0,50,75),pygame.Rect(150,0,50,75),pygame.Rect(200,0,50,75)]
+    self.deathClips=[pygame.Rect(0,0,80,75),pygame.Rect(80,0,80,75),pygame.Rect(160,0,80,75)]
+    self.framesPacer=4
     self.xvelocity=0
     self.yvelocity=0
     self.sprite=sprite
@@ -49,13 +54,22 @@ class gangster:
       if self.x < 0 or self.x>799:
         self.x-=self.xvelocity
       self.frame+=1
-      if self.frame>8:
+      if self.frame>16:
         self.frame=0
-    else:
+    elif self.alive:
       if self.facing == Facing.Left:
         self.frame=0
       if self.facing == Facing.Right:
         self.frame=8
+    elif self.frame == 0:
+      self.frame+=1
+      if self.frame>20:
+        self.frame = 20
+    else:
+      self.frame-=1
+      if self.frame < 0:
+       self.frame = 0
+       # self.dying = False
     #Handle y
     if bg.is_stairs(self.x,self.y):    
       self.y+=self.yvelocity
@@ -67,8 +81,22 @@ class gangster:
     return self.x
 
   def draw(self,window):
-    tmpsurface=self.sprite.subsurface(self.clips[self.frame/2])
+    tmpsurface=self.sprite.subsurface(self.clips[(self.frame/self.framesPacer)])
     window.blit(tmpsurface,(self.x,self.y))
+
+  def die (self):
+    self.xvelocity=0
+    self.xvelocity=0
+    self.sprite=gangsterDeathSprite
+    self.clips = self.deathClips
+    self.framesPacer=10
+    self.alive = False
+    #self.dying = True
+    self.frame = 0
+    self.x = self.x - 30 + (self.facing * 30) 
+    if self.facing == Facing.Right:
+      self.sprite = pygame.transform.flip(self.sprite, True, False)
+      self.frame = 30
 
 
 class gang:
@@ -83,6 +111,7 @@ class gang:
     self.badguys = filter(lambda g: g.alive and not g.pc, self.characters)
 
   def changePlayerCharacter(self,target):
+    self.player.die()
     self.player.pc = False
     self.player = target
     target.pc = True
