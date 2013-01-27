@@ -16,7 +16,7 @@ def init():
   global windowSurfaceObj
   windowSurfaceObj = pygame.display.set_mode((800, 600))# pygame.FULLSCREEN)
   global background
-  background = bg.bg([0,3,1,1])
+  background = bg.bg([2,1,3,0])
   pygame.display.set_caption('Heartless Killer')
 
 
