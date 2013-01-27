@@ -81,7 +81,7 @@ class gangster:
       self.ai(gang,background,window)
     if (self.xvelocity != 0 and self.alive):
       self.x=self.x+self.xvelocity
-      if self.x < 0 or self.x>799:
+      if self.x < 0 or self.x>760:
         self.x-=self.xvelocity
       elif self.pc==False and background.is_falling(self.x,self.y):
         self.x-=self.xvelocity
@@ -110,12 +110,6 @@ class gangster:
     for i in range(10):
       if background.is_falling(self.x,self.y):
         self.y+=1
-    if self.y>400:
-      self.tier=Tier.Sewer
-    elif self.y<250:
-      self.tier=Tier.Rooftops
-    else:
-      self.tier=Tier.Street
     return self.x
 
   def draw(self,window):

@@ -37,6 +37,18 @@ def game_loop():
     windowSurfaceObj.blit(background.get_bg(),(0,0))
     for g in gang.characters:
       g.move(background,windowSurfaceObj,gang)
+      if g.y>400:
+        if g.tier != gangster.Tier.Sewer:
+          g.tier=gangster.Tier.Sewer
+          if g.pc:
+            ret.findTarget(gang)
+      elif g.y<250:
+        g.tier=gangster.Tier.Rooftops
+      else:
+        if g.tier != gangster.Tier.Street:
+          g.tier=gangster.Tier.Street
+          if g.pc:
+            ret.findTarget(gang)
       g.draw(windowSurfaceObj)
     gang.drawHeart(windowSurfaceObj)
     if gang.player.shooting:
@@ -78,7 +90,7 @@ def game_loop():
           ret.shoot(gang,background, windowSurfaceObj)
         if event.key == K_SPACE:
 	  #heart jump
-	  if ret.heartJumpCheck(gang):
+          if ret.heartJumpCheck(gang):
             background.splatter(gang.player.x,gang.player.y)
           if ret.heartJump(gang):
             background.splatter(ret.target.x,ret.target.y)
