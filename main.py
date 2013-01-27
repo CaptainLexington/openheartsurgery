@@ -13,18 +13,10 @@ def init():
   reticuleHeartSprite = pygame.image.load('assets/reticuleheart.png')
   global reticuleSprite
   reticuleSprite = pygame.image.load('assets/reticule.png')
-  global floorblood
-  floorblood = []
-  floorblood.append(pygame.image.load('assets/floorblood1.png'))
-  floorblood.append(pygame.image.load('assets/floorblood2.png'))
-  global wallblood
-  wallblood = []
-  wallblood.append(pygame.image.load('assets/wallblood1.png'))
-  wallblood.append(pygame.image.load('assets/wallblood2.png'))
   global windowSurfaceObj
   windowSurfaceObj = pygame.display.set_mode((800, 600))
   global background
-  background = bg.bg([1,0,3,2])
+  background = bg.bg([0,2,3,0])
   pygame.display.set_caption('Heartless Killer')
 
 
@@ -47,6 +39,7 @@ def game_loop():
       g.move(background)
       g.draw(windowSurfaceObj)
     ret.draw(windowSurfaceObj,gang)
+    pygame.draw.rect(windowSurfaceObj,pygame.Color(73,36,0),(0,403,800,41))
     
     #Event control
     for event in pygame.event.get():
@@ -117,7 +110,7 @@ def game_loop():
         if event.key == K_SPACE:
       #heart jump
           if ret.heartJump(gang):
-            background.splatter(ret.target.x,ret.target.y,wallblood)
+            background.splatter(ret.target.x,ret.target.y)
             ret.findTarget(gang)
 
   ##Framerate control
