@@ -167,12 +167,11 @@ class gangster:
 
 
 class gang:
-  def __init__(self):
+  def __init__(self, numberOfGangsters, cfg):
     self.characters = []
-    tempx = 10
-    for g in range(4):
-      self.characters.append(gangster(gangsterSprite, tempx))
-      tempx += 175
+    for g in range(numberOfGangsters):
+      xy = cfg.readline().split()
+      self.characters.append(gangster(gangsterSprite, int(xy[0]), int(xy[1])))
     self.characters[0].pc = True
     self.player = filter(lambda g: g.pc, self.characters)[0]
     self.badguys = filter(lambda g: g.alive and not g.pc, self.characters)
