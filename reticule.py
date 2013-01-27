@@ -97,7 +97,7 @@ class reticule:
     if gang.player.facing == gangster.Facing.Right:
       muzzleFlashSprite = pygame.transform.flip(muzzleFlashSprite, True, False)
     window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (gang.player.x - 10 + (gang.player.facing * 60), gang.player.y + 33 + random.randint(-1,1)))
-    
+
   def shoot(self, gang, background, window):
     if self.target==None or gang.player.ammos==0:
 	return False
@@ -113,6 +113,21 @@ class reticule:
         self.target.die()
         gang.badguys.remove(self.target)
         self.findTarget(gang)
+
+  def shoot_general(self, background, window, shooter, shootee):
+    if shootee==None or shooter.ammos==0:
+	return False
+    if (shootee.x>shooter.x and shooter.facing==gangster.Facing.Right) or (shootee.x<shooter.x and shooter.facing==gangster.Facing.Left):
+      shooter.shooting=True
+      damage = random.randint(0,4)
+      if damage > 2:
+        self.muzzleFlash(gang, window)
+      shooter.ammos-=1
+      shootee.hp-=damage
+      background.tinysplatter(shootee.x,shootee.y)
+      if shootee.hp<1:
+        shootee.die()
+        gang.badguys.remove(shootee)
 
   def stop_shooting(self,gang):
     gang.player.shooting=False
