@@ -21,10 +21,11 @@ class gangster:
     self.tier=Tier.Street
     self.x=x
     self.y=y
-    self.hp=7
+    self.hp=100
     self.aware=False
     self.frame=0
     self.facing=Facing.Left
+    self.shooting=False
     self.ammos=100
     self.clips=[pygame.Rect(0,0,50,75),pygame.Rect(50,0,50,75),pygame.Rect(100,0,50,75),pygame.Rect(150,0,50,75),pygame.Rect(200,0,50,75)]
     self.deathClips=[pygame.Rect(0,0,80,75),pygame.Rect(80,0,80,75),pygame.Rect(160,0,80,75)]

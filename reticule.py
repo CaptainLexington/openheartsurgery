@@ -1,7 +1,8 @@
-import pygame, sys, gangster
+import pygame, sys, gangster, random, bg
 
 class reticule:
   def __init__(self, sprite1, sprite2, gang):
+    random.seed()
     self.setTarget(gang.badguys[0])
     self.canHeartJump = False
     self.sprite1 = sprite1 #Yes jump
@@ -86,4 +87,19 @@ class reticule:
     if self.target==None and gang.player.tier != gangster.Tier.Sewer:
       targets=filter(lambda g: ((g.tier != gangster.Tier.Sewer)),gang.badguys)
       self.moveHelper(gang,targets)
+    
+  def shoot(self, gang, background):
+    if self.target==None:
+	return False
+    gang.player.shooting=True
+    damage = random.randint(0,4)
+    self.target.hp-=damage
+    background.tinysplatter(self.target.x,self.target.y)
+    if self.target.hp<1:
+      self.target.die()
+      gang.badguys.remove(self.target)
+      self.findTarget(gang)
+
+  def stop_shooting(self,gang):
+    gang.player.shooting=False
     

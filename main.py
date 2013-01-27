@@ -38,6 +38,8 @@ def game_loop():
     for g in gang.characters:
       g.move(background)
       g.draw(windowSurfaceObj)
+    if gang.player.shooting:
+      ret.shoot(gang,background)
     ret.draw(windowSurfaceObj,gang)
     pygame.draw.rect(windowSurfaceObj,pygame.Color(73,36,0),(0,403,800,41))
     
@@ -72,10 +74,15 @@ def game_loop():
         #combat 
         if event.key == K_LSHIFT:
           #shoot
-          pass
+          ret.shoot(gang,background)
         if event.key == K_SPACE:
 	  #heart jump
-          pass
+	  if ret.heartJumpCheck(gang):
+            background.splatter(gang.player.x,gang.player.y)
+          if ret.heartJump(gang):
+            background.splatter(ret.target.x,ret.target.y)
+            ret.findTarget(gang)
+
       elif event.type == KEYUP:
       #move reticule between enemies
         if event.key == K_UP:
@@ -106,15 +113,10 @@ def game_loop():
          #combat 
         if event.key == K_LSHIFT:
           #shoot
-          pass
+          ret.stop_shooting(gang)
         if event.key == K_SPACE:
       #heart jump
-	  if ret.heartJumpCheck(gang):
-            background.splatter(gang.player.x,gang.player.y)
-          if ret.heartJump(gang):
-            background.splatter(ret.target.x,ret.target.y)
-            ret.findTarget(gang)
-
+	  pass
   ##Framerate control
     pygame.display.update()
     fpsClock.tick(30)

@@ -89,6 +89,17 @@ class bg:
       elif place==Location.Floor:
         self.screen.blit(self.floorblood[i%len(self.floorblood)],(x,y))
 
+  def tinysplatter(self,x,y):
+    x+=25
+    y+=37
+    x+=random.randint(0,40)-20
+    y+=random.randint(0,40)-20
+    place = self.where_decal(x,y)
+    if place==Location.Wall:
+      self.screen.blit(self.wallblood[1],(x,y))
+    elif place==Location.Floor:
+      self.screen.blit(self.floorblood[1],(x,y))
+
   def where_decal(self,x,y):
     if self.is_stairs(x,y):
       return Location.No 
