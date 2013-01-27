@@ -16,7 +16,14 @@ def init():
   global windowSurfaceObj
   windowSurfaceObj = pygame.display.set_mode((800, 600))# pygame.FULLSCREEN)
   global background
-  background = bg.bg([2,1,3,0])
+  cfg = open('cfg/level1.cfg')
+  numberOfGangsters = int(cfg.readline())
+  global gang
+  gang = gangster.gang(numberOfGangsters, cfg)
+  tiles = []  
+  for tile in cfg.readline().split():
+    tiles.append(int(tile))
+  background = bg.bg(tiles)
   pygame.display.set_caption('Heartless Killer')
 
 
@@ -24,7 +31,6 @@ def init():
 def game_loop():
   global windowSurfaceObj
   fpsClock=pygame.time.Clock()
-  gang = gangster.gang()
   ret = reticule.reticule(reticuleHeartSprite, reticuleSprite, gang)
   mousex, mousey = 600,200
   while True:
