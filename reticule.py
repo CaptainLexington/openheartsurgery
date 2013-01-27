@@ -22,11 +22,12 @@ class reticule:
         window.blit(self.sprite2, (self.target.x + 15, self.target.y + 25))
 
   def heartJumpCheck(self,gang):
+    facing = (self.target.x>gang.player.x and gang.player.facing==gangster.Facing.Right) or (self.target.x<gang.player.x and gang.player.facing==gangster.Facing.Left)
     if self.target==None:
       return False
     closeX = abs(self.target.x - gang.player.x) < 100
     closeY = (gang.player.tier == self.target.tier) or (gang.player.tier != gangster.Tier.Sewer and self.target.tier != gangster.Tier.Sewer)
-    self.canHeartJump=closeX and closeY
+    self.canHeartJump=closeX and closeY and facing
     return self.canHeartJump
         
 
@@ -98,13 +99,13 @@ class reticule:
     window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (gang.player.x - 10 + (gang.player.facing * 60), gang.player.y + 33 + random.randint(-1,1)))
     
   def shoot(self, gang, background, window):
-    if self.target==None:
+    if self.target==None or gang.player.ammos==0:
 	return False
     gang.player.shooting=True
     damage = random.randint(0,4)
     if damage > 2:
       self.muzzleFlash(gang, window)
-    background.tinysplatter(self.target.x,self.target.y)
+    gang.player.ammos-=1
     if (self.target.x>gang.player.x and gang.player.facing==gangster.Facing.Right) or (self.target.x<gang.player.x and gang.player.facing==gangster.Facing.Left):
       self.target.hp-=damage
       background.tinysplatter(self.target.x,self.target.y)
