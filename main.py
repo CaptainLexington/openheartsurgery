@@ -14,7 +14,7 @@ def init():
   global reticuleSprite
   reticuleSprite = pygame.image.load('assets/reticule.png')
   global windowSurfaceObj
-  windowSurfaceObj = pygame.display.set_mode((800, 600))# pygame.FULLSCREEN)
+  windowSurfaceObj = pygame.display.set_mode((800, 600), pygame.FULLSCREEN)
   global background
   cfg = open('cfg/level1.cfg')
   numberOfGangsters = int(cfg.readline())
