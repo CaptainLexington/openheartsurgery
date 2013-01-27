@@ -48,28 +48,42 @@ class gangster:
       self.facing = Facing.Right
       self.sprite = pygame.transform.flip(self.sprite, True, False)
 
+  def can_affect(self,otherguy):
+     if self.tier==Tier.Sewer:
+       if otherguy.tier!=Tier.Sewer:
+         return False
+     elif otherguy.tier==Tier.Sewer:
+       return False
+     return True
+
   def setYVelocity(self, velocity):
     self.yvelocity+=velocity
 
   def ai (self,gang,bg,window):
-    turn=random.randint(1,30)
-    if turn==1:
-      self.xvelocity=5
-    if turn==2:
-      self.xvelocity=-5
-    if turn==3 or turn==4:
-      self.xvelocity=0
-    if turn>29:
+    self.notice(gang.player)
+    if self.aware:
+      if self.shooting:
+        self.xvelocity=0
       self.shoot_general(bg,window,self,gang.player)
-    self.rightfacing()
+    if not self.aware or not self.shooting:
+      turn=random.randint(1,30)
+      if turn==1:
+        self.xvelocity=3
+      if turn==2:
+        self.xvelocity=-3
+      if turn==3 or turn==4:
+        self.xvelocity=0
+      self.rightfacing()
 
   def move(self,background,window,gang):
     #Handle x
     if self.pc==False and self.alive:
       self.ai(gang,background,window)
-    if (self.xvelocity != 0):
+    if (self.xvelocity != 0 and self.alive):
       self.x=self.x+self.xvelocity
       if self.x < 0 or self.x>799:
+        self.x-=self.xvelocity
+      elif self.pc==False and background.is_falling(self.x,self.y):
         self.x-=self.xvelocity
       self.frame+=1
       if self.frame>16:
@@ -78,7 +92,7 @@ class gangster:
       if self.facing == Facing.Left:
         self.frame=0
       if self.facing == Facing.Right:
-        self.frame=8
+        self.frame=16
     elif self.facing == Facing.Left:
       self.frame+=1
       if self.frame > 20:
@@ -110,7 +124,8 @@ class gangster:
     window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (shooter.x - 10 + (shooter.facing * 60), shooter.y + 33 + random.randint(-1,1)))
 
   def shoot_general(self,background,window,shooter,shootee):
-    if shooter.ammos==0 or not shootee.alive:
+    if shooter.ammos==0 or not shootee.alive or not shooter.can_affect(shootee):
+      shooter.shooting=False
       return False
     if (shootee.x>shooter.x and shooter.facing==Facing.Right) or (shootee.x<shooter.x and shooter.facing==Facing.Left):
       shooter.shooting=True
@@ -122,6 +137,10 @@ class gangster:
       background.tinysplatter(shootee.x,shootee.y)
       if shootee.hp<1:
         shootee.die()
+
+  def notice (self,player):
+    if self.tier==player.tier and abs(self.x-player.x)<75:
+      self.aware=True
 
   def die (self):
     self.xvelocity=0
@@ -156,6 +175,8 @@ class gang:
     self.heartStep = 0
 
   def changePlayerCharacter(self,target):
+    xvel=self.player.xvelocity
+    yvel=self.player.yvelocity
     self.player.die()
     self.player.pc = False
     self.player = target
@@ -163,7 +184,8 @@ class gang:
     self.heartTarget = target
     self.heartStep = (self.heartTarget.x - self.heartX)/10
     self.heartAirborne = True
-    self.player.velocity = 0
+    self.player.xvelocity = xvel
+    self.player.yvelocity = yvel
     self.badguys.remove(target)
 
   def drawHeart(self, window):

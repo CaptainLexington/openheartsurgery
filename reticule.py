@@ -99,8 +99,9 @@ class reticule:
     window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (gang.player.x - 10 + (gang.player.facing * 60), gang.player.y + 33 + random.randint(-1,1)))
 
   def shoot(self, gang, background, window):
-    if self.target==None or gang.player.ammos==0:
+    if self.target==None or gang.player.ammos==0 or not gang.player.can_affect(self.target):
 	return False
+    self.makePresenceKnown(gang)
     gang.player.shooting=True
     damage = random.randint(0,4)
     if damage > 2:
@@ -114,20 +115,18 @@ class reticule:
         gang.badguys.remove(self.target)
         self.findTarget(gang)
 
-  def shoot_general(self, background, window, shooter, shootee):
-    if shootee==None or shooter.ammos==0:
-	return False
-    if (shootee.x>shooter.x and shooter.facing==gangster.Facing.Right) or (shootee.x<shooter.x and shooter.facing==gangster.Facing.Left):
-      shooter.shooting=True
-      damage = random.randint(0,4)
-      if damage > 2:
-        self.muzzleFlash(gang, window)
-      shooter.ammos-=1
-      shootee.hp-=damage
-      background.tinysplatter(shootee.x,shootee.y)
-      if shootee.hp<1:
-        shootee.die()
-        gang.badguys.remove(shootee)
+  def makePresenceKnown(self, gang):
+    if gang.player.tier==gangster.Tier.Sewer:
+      enemies=filter(lambda g:((g.tier==gangster.Tier.Sewer)),gang.badguys)
+    elif gang.player.tier==gangster.Tier.Street:
+      enemies=filter(lambda g:((g.tier!=gangster.Tier.Sewer)),gang.badguys)
+    elif gang.player.tier==gangster.Tier.Rooftops:
+      enemies=filter(lambda g:((g.tier==gangster.Tier.Rooftops)),gang.badguys)
+    else:
+      enemies=[]
+      print "Someone made a mistake implementing tiers."
+    for jerk in enemies:
+      jerk.aware=True
 
   def stop_shooting(self,gang):
     gang.player.shooting=False
