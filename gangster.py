@@ -110,6 +110,12 @@ class gangster:
     for i in range(10):
       if background.is_falling(self.x,self.y):
         self.y+=1
+    if self.y>400:
+      self.tier=Tier.Sewer
+    elif self.y<250:
+      self.tier=Tier.Rooftops
+    else:
+      self.tier=Tier.Street
     return self.x
 
   def draw(self,window):
@@ -161,9 +167,9 @@ class gang:
   def __init__(self):
     self.characters = []
     tempx = 10
-    for g in range(5):
+    for g in range(4):
       self.characters.append(gangster(gangsterSprite, tempx))
-      tempx += 100
+      tempx += 175
     self.characters[0].pc = True
     self.player = filter(lambda g: g.pc, self.characters)[0]
     self.badguys = filter(lambda g: g.alive and not g.pc, self.characters)

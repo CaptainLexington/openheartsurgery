@@ -22,10 +22,10 @@ class reticule:
         window.blit(self.sprite2, (self.target.x + 15, self.target.y + 25))
 
   def heartJumpCheck(self,gang):
-    facing = (self.target.x>gang.player.x and gang.player.facing==gangster.Facing.Right) or (self.target.x<gang.player.x and gang.player.facing==gangster.Facing.Left)
     if self.target==None:
       return False
-    closeX = abs(self.target.x - gang.player.x) < 300
+    facing = (self.target.x>gang.player.x and gang.player.facing==gangster.Facing.Right) or (self.target.x<gang.player.x and gang.player.facing==gangster.Facing.Left)
+    closeX = abs(self.target.x - gang.player.x) < 200
     closeY = (gang.player.tier == self.target.tier) or (gang.player.tier != gangster.Tier.Sewer and self.target.tier != gangster.Tier.Sewer)
     self.canHeartJump=closeX and closeY and facing
     return self.canHeartJump
@@ -57,13 +57,13 @@ class reticule:
   def moveLeft(self, gang):
     if self.target == None:
       self.target=gang.player
-    targets = filter(lambda g: ((g.tier == gang.player.tier) and (g.x < self.target.x)), gang.badguys)
+    targets = filter(lambda g: ((g.tier == self.target.tier) and (g.x < self.target.x)), gang.badguys)
     self.moveHelper(gang,targets)
  
   def moveRight(self, gang):
     if self.target==None:
       self.target=gang.player
-    targets = filter(lambda g: ((g.tier == gang.player.tier) and (g.x > self.target.x)), gang.badguys)
+    targets = filter(lambda g: ((g.tier == self.target.tier) and (g.x > self.target.x)), gang.badguys)
     self.moveHelper(gang,targets)
 
 
@@ -88,6 +88,7 @@ class reticule:
     targets=filter(lambda g: ((g.tier == gang.player.tier)), gang.badguys)
     self.moveHelper(gang,targets)
     if self.target==None and gang.player.tier != gangster.Tier.Sewer:
+      self.target=gang.player
       targets=filter(lambda g: ((g.tier != gangster.Tier.Sewer)),gang.badguys)
       self.moveHelper(gang,targets)
 

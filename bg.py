@@ -54,12 +54,15 @@ class bg:
     elif image==3:
       if y<225 or (y>225 and y<370):
         return True
-    elif y>410 and y<570:
+    if y>400 and y<570:
       return True
-    else:
-      return False
+    return False
 
   def is_stairs(self,x,y):
+    if x<0:
+      x=0
+    if x>799:
+      x=799
     image=self.image_set[x/200]
     x=x%200
     y=y+70 #Hit with your feet, not with your head
@@ -68,7 +71,8 @@ class bg:
       if x<70 and y<375 and y>68:
         return True
     if image==1:
-      pass
+      if x>30 and x<80 and y>365 and y<575:
+        return True
     if image==2:
       pass
     if image==3:
@@ -78,7 +82,7 @@ class bg:
   def splatter(self,x,y):
     #put the blood near the character's center
     x+=25
-    y+=37
+    y+=45
     for i in range(random.randint(5,10)):
       x+=random.randint(0,40)-20
       y+=random.randint(0,40)-20
@@ -91,7 +95,7 @@ class bg:
 
   def tinysplatter(self,x,y):
     x+=25
-    y+=37
+    y+=45
     x+=random.randint(0,40)-20
     y+=random.randint(0,40)-20
     place = self.where_decal(x,y)
