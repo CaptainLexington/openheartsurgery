@@ -13,6 +13,14 @@ def init():
   reticuleHeartSprite = pygame.image.load('assets/reticuleheart.png')
   global reticuleSprite
   reticuleSprite = pygame.image.load('assets/reticule.png')
+  global floorblood
+  floorblood = []
+  floorblood.append(pygame.image.load('assets/floorblood1.png'))
+  floorblood.append(pygame.image.load('assets/floorblood2.png'))
+  global wallblood
+  wallblood = []
+  wallblood.append(pygame.image.load('assets/wallblood1.png'))
+  wallblood.append(pygame.image.load('assets/wallblood2.png'))
   global windowSurfaceObj
   windowSurfaceObj = pygame.display.set_mode((800, 600))
   global background
@@ -108,7 +116,9 @@ def game_loop():
           pass
         if event.key == K_SPACE:
       #heart jump
-          ret.heartJump(gang)
+          if ret.heartJump(gang):
+            background.splatter(ret.target.x,ret.target.y,wallblood)
+            ret.findTarget(gang)
 
   ##Framerate control
     pygame.display.update()

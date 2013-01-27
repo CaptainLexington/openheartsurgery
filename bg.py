@@ -1,7 +1,8 @@
-import pygame
+import pygame, random
 
 class bg:
   def __init__(self,a=[1,1,1,1]):
+    random.seed()
     self.image_set=a
     base_image=self.load_image()
     clips=[]
@@ -57,3 +58,12 @@ class bg:
     if image==3:
       pass
     return False
+
+  def splatter(self,x,y,blood):
+    #put the blood near the character's center
+    x+=25
+    y+=37
+    for i in range(random.randint(3,10)):
+      x+=random.randint(0,40)-20
+      y+=random.randint(0,40)-20
+      self.screen.blit(blood[i%len(blood)],(x,y))

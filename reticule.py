@@ -19,6 +19,8 @@ class reticule:
         window.blit(self.sprite2, (self.target.x + 15, self.target.y + 25))
 
   def heartJumpCheck(self,gang):
+    if self.target==None:
+      return False
     closeX = abs(self.target.x - gang.player.x) < 100
     closeY = (gang.player.tier == self.target.tier) or (gang.player.tier != gangster.Tier.Sewer and self.target.tier != gangster.Tier.Sewer)
     self.canHeartJump=closeX and closeY
@@ -28,7 +30,8 @@ class reticule:
   def heartJump(self,gang):
     if self.heartJumpCheck(gang):
       gang.changePlayerCharacter(self.target)
-      self.findTarget(gang)
+      return True
+    return False
 
   def moveHelper(self,gang,targets):
     if len(targets) == 0:
