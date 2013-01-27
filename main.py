@@ -109,6 +109,8 @@ def game_loop():
           pass
         if event.key == K_SPACE:
       #heart jump
+	  if ret.heartJumpCheck(gang):
+            background.splatter(gang.player.x,gang.player.y)
           if ret.heartJump(gang):
             background.splatter(ret.target.x,ret.target.y)
             ret.findTarget(gang)
