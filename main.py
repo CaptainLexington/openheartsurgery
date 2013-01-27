@@ -14,7 +14,7 @@ def init():
   global reticuleSprite
   reticuleSprite = pygame.image.load('assets/reticule.png')
   global windowSurfaceObj
-  windowSurfaceObj = pygame.display.set_mode((800, 600))
+  windowSurfaceObj = pygame.display.set_mode((800, 600))# pygame.FULLSCREEN)
   global background
   background = bg.bg([0,2,3,0])
   pygame.display.set_caption('Heartless Killer')
@@ -39,7 +39,7 @@ def game_loop():
       g.move(background)
       g.draw(windowSurfaceObj)
     if gang.player.shooting:
-      ret.shoot(gang,background)
+      ret.shoot(gang,background, windowSurfaceObj)
     ret.draw(windowSurfaceObj,gang)
     pygame.draw.rect(windowSurfaceObj,pygame.Color(73,36,0),(0,403,800,41))
     
@@ -74,7 +74,7 @@ def game_loop():
         #combat 
         if event.key == K_LSHIFT:
           #shoot
-          ret.shoot(gang,background)
+          ret.shoot(gang,background, windowSurfaceObj)
         if event.key == K_SPACE:
 	  #heart jump
 	  if ret.heartJumpCheck(gang):

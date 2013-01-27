@@ -97,12 +97,14 @@ class reticule:
       muzzleFlashSprite = pygame.transform.flip(muzzleFlashSprite, True, False)
     window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (gang.player.x - 10 + (gang.player.facing * 60), gang.player.y + 33 + random.randint(-1,1)))
     
-  def shoot(self, gang, background):
-    if self.target==None or gang.player.ammos==0:
+  def shoot(self, gang, background, window):
+    if self.target==None:
 	return False
     gang.player.shooting=True
     damage = random.randint(0,4)
-    gang.player.ammos-=1
+    if damage > 2:
+      self.muzzleFlash(gang, window)
+    background.tinysplatter(self.target.x,self.target.y)
     if (self.target.x>gang.player.x and gang.player.facing==gangster.Facing.Right) or (self.target.x<gang.player.x and gang.player.facing==gangster.Facing.Left):
       self.target.hp-=damage
       background.tinysplatter(self.target.x,self.target.y)
