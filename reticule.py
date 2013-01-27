@@ -25,7 +25,7 @@ class reticule:
     facing = (self.target.x>gang.player.x and gang.player.facing==gangster.Facing.Right) or (self.target.x<gang.player.x and gang.player.facing==gangster.Facing.Left)
     if self.target==None:
       return False
-    closeX = abs(self.target.x - gang.player.x) < 100
+    closeX = abs(self.target.x - gang.player.x) < 300
     closeY = (gang.player.tier == self.target.tier) or (gang.player.tier != gangster.Tier.Sewer and self.target.tier != gangster.Tier.Sewer)
     self.canHeartJump=closeX and closeY and facing
     return self.canHeartJump

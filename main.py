@@ -38,6 +38,7 @@ def game_loop():
     for g in gang.characters:
       g.move(background)
       g.draw(windowSurfaceObj)
+    gang.drawHeart(windowSurfaceObj)
     if gang.player.shooting:
       ret.shoot(gang,background, windowSurfaceObj)
     ret.draw(windowSurfaceObj,gang)
@@ -116,7 +117,7 @@ def game_loop():
           ret.stop_shooting(gang)
         if event.key == K_SPACE:
       #heart jump
-	  pass
+	        pass
   ##Framerate control
     pygame.display.update()
     fpsClock.tick(30)

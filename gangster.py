@@ -5,6 +5,8 @@ global gangsterSprite
 gangsterSprite= pygame.image.load('assets/gangstersheet.png')
 global gangsterDeathSprite
 gangsterDeathSprite = pygame.image.load('assets/gangsterdeathsheet.png')
+global heartSprite
+heartSprite = pygame.image.load('assets/heart.png')
 
 class Facing:
   Left, Right, Back = range(3)
@@ -110,10 +112,38 @@ class gang:
     self.characters[0].pc = True
     self.player = filter(lambda g: g.pc, self.characters)[0]
     self.badguys = filter(lambda g: g.alive and not g.pc, self.characters)
+    self.heartFrame = 0
+    self.heartAirborne = False
+    self.heartX = self.player.x + 28 - (15 * self.player.facing)
+    self.heartY = self.player.y + 23
+    self.heartTarget = None
+    self.heartStep = 0
 
   def changePlayerCharacter(self,target):
     self.player.die()
     self.player.pc = False
     self.player = target
     target.pc = True
+    self.heartTarget = target
+    self.heartStep = (self.heartTarget.x - self.heartX)/10
+    self.heartAirborne = True
+    self.player.velocity = 0
     self.badguys.remove(target)
+
+  def drawHeart(self, window):
+    clips = [pygame.Rect(0,0,10,20), pygame.Rect(10,0,10,20), pygame.Rect(20,0,10,20), pygame.Rect(30,0,10,20)]
+    self.heartFrame += 1
+    if self.heartFrame > 30:
+      self.heartFrame = 0
+    if not self.heartAirborne:
+      self.heartX = self.player.x + 28 - (15 * self.player.facing)
+      self.heartY = self.player.y + 23
+      tmpsurface = heartSprite.subsurface(clips[self.heartFrame/15])
+      window.blit(tmpsurface, (self.heartX, self.heartY))
+    else:
+      self.heartX += self.heartStep
+      if abs(self.heartTarget.x - self.heartX) < abs(self.heartStep):
+          self.heartAirborne = False
+      tmpsurface = heartSprite.subsurface(clips[(self.heartFrame/15)+1])
+      window.blit(tmpsurface, (self.heartX, self.heartY))
+
