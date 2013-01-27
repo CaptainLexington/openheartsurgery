@@ -33,6 +33,8 @@ class reticule:
 
   def heartJump(self,gang):
     if self.heartJumpCheck(gang):
+      sound.nastySquishSound.play()
+      sound.boneSquuchSound.play()
       gang.changePlayerCharacter(self.target)
       return True
     return False

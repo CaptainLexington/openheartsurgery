@@ -212,6 +212,7 @@ class gang:
       self.heartX += self.heartStep
       if abs(self.heartTarget.x - self.heartX) < abs(self.heartStep):
           self.heartAirborne = False
+          sound.wetSplatSound.play()
       tmpsurface = heartSprite.subsurface(clips[(self.heartFrame/15)+1])
       window.blit(tmpsurface, (self.heartX, self.heartY))
 
