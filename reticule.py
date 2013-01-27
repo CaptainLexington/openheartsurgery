@@ -102,7 +102,7 @@ class reticule:
     window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (gang.player.x - 10 + (gang.player.facing * 60), gang.player.y + 33 + random.randint(-1,1)))
 
   def shoot(self, gang, background, window):
-    if self.target==None or gang.player.ammos==0 or not gang.player.can_affect(self.target):
+    if self.target==None or gang.player.ammos==0 or not gang.player.can_affect(self.target) or gang.player.alive==False:
         self.stop_shooting(gang)
 	return False
     self.makePresenceKnown(gang)
