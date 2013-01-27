@@ -193,7 +193,8 @@ class gang:
     target.pc = True
     target.stop_shooting()
     self.heartTarget = target
-    self.heartStep = (self.heartTarget.x - self.heartX)/10
+    self.heartStepX = (self.heartTarget.x - self.heartX)/10
+    self.heartStepY = (self.heartTarget.y + 32 - self.heartY)/10
     self.heartAirborne = True
     self.player.xvelocity = xvel
     self.player.yvelocity = yvel
@@ -210,8 +211,10 @@ class gang:
       tmpsurface = heartSprite.subsurface(clips[self.heartFrame/15])
       window.blit(tmpsurface, (self.heartX, self.heartY))
     else:
-      self.heartX += self.heartStep
-      if abs(self.heartTarget.x - self.heartX) < abs(self.heartStep):
+      self.heartX += self.heartStepX
+      print self.heartY, self.heartStepY
+      self.heartY += self.heartStepY
+      if abs(self.heartTarget.x - self.heartX) < abs(self.heartStepX) and abs(self.heartTarget.y - self.heartY) < abs(30):
           self.heartAirborne = False
           sound.wetSplatSound.play()
       tmpsurface = heartSprite.subsurface(clips[(self.heartFrame/15)+1])
