@@ -233,8 +233,6 @@ class gang:
       if self.heartX==self.heartTarget.x and self.heartY==self.heartTarget.y:
           self.heartAirborne = False
           sound.wetSplatSound.play()
-          self.heartTarget.xvelocity = 0
-          self.heartTarget.yvelocity = 0
       tmpsurface = heartSprite.subsurface(clips[(self.heartFrame//15)+1])
       window.blit(tmpsurface, (self.heartX, self.heartY))
 
