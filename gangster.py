@@ -39,7 +39,8 @@ class gangster:
   
   def setXVelocity(self, velocity):
     self.xvelocity+=velocity
-    self.rightfacing()
+    if self.alive:
+        self.rightfacing()
 
   def rightfacing(self,):
     if (self.xvelocity < 0) and (self.facing != Facing.Left):
@@ -65,7 +66,7 @@ class gangster:
     if self.aware:
       if self.shooting:
         self.xvelocity=0
-      self.shoot_general(bg,window,self,gang.player)
+      self.shoot(bg,window,gang.player)
     if not self.aware or not self.shooting:
       turn=random.randint(1,30)
       if turn==1:
@@ -114,34 +115,35 @@ class gangster:
     return self.x
 
   def draw(self,window):
-    tmpsurface=self.sprite.subsurface(self.clips[(self.frame/self.framesPacer)])
+    tmpsurface=self.sprite.subsurface(self.clips[(self.frame//self.framesPacer)])
     window.blit(tmpsurface,(self.x,self.y))
 
-  def muzzleFlash_general(self,window,shooter):
+  def muzzleFlash(self,window):
     clips = [pygame.Rect(0, 0, 15, 10), pygame.Rect(15, 0, 15, 10)]
     muzzleFlashSprite = pygame.image.load("assets/muzzleflash.png")
-    if shooter.facing == Facing.Right:
+    if self.facing == Facing.Right:
       muzzleFlashSprite = pygame.transform.flip(muzzleFlashSprite, True, False)
-    window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (shooter.x - 10 + (shooter.facing * 60), shooter.y + 33 + random.randint(-1,1)))
+    window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (self.x - 10 + (self.facing * 60), self.y + 33 + random.randint(-1,1)))
 
-  def shoot_general(self,background,window,shooter,shootee):
-    if shooter.ammos==0 or not shootee.alive or not shooter.can_affect(shootee):
+  def shoot(self,background,window,shootee):
+    if self.ammos==0 or not shootee.alive or not self.can_affect(shootee):
       self.stop_shooting()
       return False
-    if (shootee.x>shooter.x and shooter.facing==Facing.Right) or (shootee.x<shooter.x and shooter.facing==Facing.Left):
-      if shooter.shooting==False:
-        shooter.shooting=True
-        shooter.channel=sound.machineGunSound.play()
+    if (shootee.x>self.x and self.facing==Facing.Right) or (shootee.x<self.x and self.facing==Facing.Left):
+      if self.shooting==False:
+        self.shooting=True
+        self.channel=sound.machineGunSound.play()
       damage = random.randint(0,4)
       if damage > 2:
-        self.muzzleFlash_general(window,shooter)
-      shooter.ammos-=1
+        self.muzzleFlash(window)
+      self.ammos-=1
       shootee.hp-=damage
       background.tinysplatter(shootee.x,shootee.y)
       if shootee.hp<1:
         shootee.die()
-        if shooter.channel!=None:
-          shooter.channel.queue(sound.failSplatSound)
+        if self.channel!=None:
+          self.channel.queue(sound.failSplatSound)
+    return True
 
   def stop_shooting(self):
     self.shooting=False
@@ -175,8 +177,8 @@ class gang:
       xy = cfg.readline().split()
       self.characters.append(gangster(gangsterSprite, int(xy[0]), int(xy[1])))
     self.characters[0].pc = True
-    self.player = filter(lambda g: g.pc, self.characters)[0]
-    self.badguys = filter(lambda g: g.alive and not g.pc, self.characters)
+    self.player = list(filter(lambda g: g.pc, self.characters))[0] #python2 and python3 compatibility
+    self.badguys = list(filter(lambda g: g.alive and not g.pc, self.characters))
     self.heartFrame = 0
     self.heartAirborne = False
     self.heartX = self.player.x + 28 - (15 * self.player.facing)
@@ -187,14 +189,15 @@ class gang:
   def changePlayerCharacter(self,target):
     xvel=self.player.xvelocity
     yvel=self.player.yvelocity
-    self.player.die()
+    if (self.player.alive):
+        self.player.die()
     self.player.pc = False
     self.player = target
-    target.pc = True
-    target.stop_shooting()
-    self.heartTarget = target
+    self.player.pc = True
+    self.player.stop_shooting()
+    self.heartTarget = self.player
     self.heartStepX = (self.heartTarget.x - self.heartX)/10
-    self.heartStepY = (self.heartTarget.y + 32 - self.heartY)/10
+    self.heartStepY = (self.heartTarget.y - self.heartY)/10
     self.heartAirborne = True
     self.player.xvelocity = xvel
     self.player.yvelocity = yvel
@@ -207,17 +210,31 @@ class gang:
       self.heartFrame = 0
     if not self.heartAirborne:
       self.heartX = self.player.x + 28 - (15 * self.player.facing)
-      self.heartY = self.player.y + 23
-      tmpsurface = heartSprite.subsurface(clips[self.heartFrame/15])
+      if self.player.alive:
+          self.heartY = self.player.y + 23
+      else:
+          self.heartY = self.player.y + 50
+      tmpsurface = heartSprite.subsurface(clips[self.heartFrame//15])
       window.blit(tmpsurface, (self.heartX, self.heartY))
     else:
-      self.heartX += self.heartStepX
-      self.heartY += self.heartStepY
-      if abs(self.heartTarget.x - self.heartX) < abs(self.heartStepX) and abs(self.heartTarget.y - self.heartY) < abs(30):
+      #If we're almost there
+      closeX = False
+      closeY = False 
+      if abs(self.heartX-self.heartTarget.x)<abs(self.heartX+self.heartStepX-self.heartTarget.x):
+          self.heartX=self.heartTarget.x
+      else:
+          self.heartX += self.heartStepX
+      if abs(self.heartY-self.heartTarget.y)<abs(self.heartY+self.heartStepY-self.heartTarget.y):
+          self.heartY=self.heartTarget.y
+      else:
+          self.heartY += self.heartStepY
+
+      #If we're there
+      if self.heartX==self.heartTarget.x and self.heartY==self.heartTarget.y:
           self.heartAirborne = False
           sound.wetSplatSound.play()
           self.heartTarget.xvelocity = 0
           self.heartTarget.yvelocity = 0
-      tmpsurface = heartSprite.subsurface(clips[(self.heartFrame/15)+1])
+      tmpsurface = heartSprite.subsurface(clips[(self.heartFrame//15)+1])
       window.blit(tmpsurface, (self.heartX, self.heartY))
 

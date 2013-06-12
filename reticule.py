@@ -1,6 +1,5 @@
 import pygame, sys, gangster, random, bg, sound
 
-#global muzzleFlashSprite
 
 class reticule:
   def __init__(self, sprite1, sprite2, gang):
@@ -27,7 +26,7 @@ class reticule:
     facing = (self.target.x>gang.player.x and gang.player.facing==gangster.Facing.Right) or (self.target.x<gang.player.x and gang.player.facing==gangster.Facing.Left)
     closeX = abs(self.target.x - gang.player.x) < 200
     closeY = (gang.player.tier == self.target.tier) or (gang.player.tier != gangster.Tier.Sewer and self.target.tier != gangster.Tier.Sewer)
-    self.canHeartJump=closeX and closeY and facing
+    self.canHeartJump=closeX and closeY and (facing or not gang.player.alive)
     return self.canHeartJump
         
 
@@ -39,7 +38,7 @@ class reticule:
       return True
     return False
 
-  def moveHelper(self,gang,targets):
+  def retargetHelper(self,gang,targets):
     if len(targets) == 0:
         minGuy = self.target
     elif len(targets) == 1:
@@ -56,70 +55,60 @@ class reticule:
     if self.target==gang.player:
       self.target=None
 
+#in the following functions, filter is cast as a list for compatibility with Pyhton2 and Python3
+
+  #Choose best target left of current
   def moveLeft(self, gang):
     if self.target == None:
       self.target=gang.player
-    targets = filter(lambda g: ((g.tier == self.target.tier) and (g.x < self.target.x)), gang.badguys)
-    self.moveHelper(gang,targets)
+    targets = list(filter(lambda g: ((g.tier == self.target.tier) and (g.x < self.target.x)), gang.badguys))
+    self.retargetHelper(gang,targets)
  
+  #Choose best target right of current
   def moveRight(self, gang):
     if self.target==None:
       self.target=gang.player
-    targets = filter(lambda g: ((g.tier == self.target.tier) and (g.x > self.target.x)), gang.badguys)
-    self.moveHelper(gang,targets)
+    targets = list(filter(lambda g: ((g.tier == self.target.tier) and (g.x > self.target.x)), gang.badguys))
+    self.retargetHelper(gang,targets)
 
-
+  #If on street or rooftops, choose rooftop target
   def moveUp(self, gang):
     if gang.player.tier != gangster.Tier.Sewer:
       if self.target==None:
         self.target=gang.player
-      targets = filter(lambda g: ((g.tier == gangster.Tier.Rooftops)), gang.badguys)
-      self.moveHelper(gang,targets)
+      targets = list(filter(lambda g: ((g.tier == gangster.Tier.Rooftops)), gang.badguys))
+      self.retargetHelper(gang,targets)
 
+  #If on street or rooftops, choose street target
   def moveDown(self, gang):
     if gang.player.tier != gangster.Tier.Sewer:
       if self.target==None:
         self.target=gang.player
-      targets = filter(lambda g: ((g.tier == gangster.Tier.Street)), gang.badguys)
-      self.moveHelper(gang,targets)
+      targets = list(filter(lambda g: ((g.tier == gangster.Tier.Street)), gang.badguys))
+      self.retargetHelper(gang,targets)
 
   #FINDS BEST TARGET
   #DISREGARDS CURRENT TARGET
   def findTarget(self, gang):
     self.target=gang.player
-    targets=filter(lambda g: ((g.tier == gang.player.tier)), gang.badguys)
-    self.moveHelper(gang,targets)
+    targets=list(filter(lambda g: ((g.tier == gang.player.tier)), gang.badguys))
+    self.retargetHelper(gang,targets)
     if self.target==None and gang.player.tier != gangster.Tier.Sewer:
       self.target=gang.player
-      targets=filter(lambda g: ((g.tier != gangster.Tier.Sewer)),gang.badguys)
-      self.moveHelper(gang,targets)
-
-  def muzzleFlash(self, gang, window):
-    clips = [pygame.Rect(0, 0, 15, 10), pygame.Rect(15, 0, 15, 10)]
-    muzzleFlashSprite = pygame.image.load("assets/muzzleflash.png")
-    if gang.player.facing == gangster.Facing.Right:
-      muzzleFlashSprite = pygame.transform.flip(muzzleFlashSprite, True, False)
-    window.blit(muzzleFlashSprite.subsurface(clips[random.randint(0,1)]), (gang.player.x - 10 + (gang.player.facing * 60), gang.player.y + 33 + random.randint(-1,1)))
+      targets=list(filter(lambda g: ((g.tier != gangster.Tier.Sewer)),gang.badguys))
+      self.retargetHelper(gang,targets)
 
   def shoot(self, gang, background, window):
-    if self.target==None or gang.player.ammos==0 or not gang.player.can_affect(self.target) or gang.player.alive==False:
-        self.stop_shooting(gang)
-	return False
-    self.makePresenceKnown(gang)
-    if gang.player.shooting==False:
-      gang.player.shooting=True
-      gang.player.channel=sound.machineGunSound.play()
-    damage = random.randint(0,4)
-    if damage > 2:
-      self.muzzleFlash(gang, window)
-    gang.player.ammos-=1
-    if (self.target.x>gang.player.x and gang.player.facing==gangster.Facing.Right) or (self.target.x<gang.player.x and gang.player.facing==gangster.Facing.Left):
-      self.target.hp-=damage
-      background.tinysplatter(self.target.x,self.target.y)
-      if self.target.hp<1:
-        self.target.die()
-        gang.badguys.remove(self.target)
-        self.findTarget(gang)
+     if self.target==None or not gang.player.shoot(background, window, self.target):
+         self.stop_shooting(gang)
+         return False
+     else:
+         self.makePresenceKnown(gang)
+         if self.target.hp<1:
+             gang.player.stop_shooting()
+             gang.badguys.remove(self.target)
+             self.findTarget(gang)
+         return True
 
   def makePresenceKnown(self, gang):
     if gang.player.tier==gangster.Tier.Sewer:
@@ -130,7 +119,7 @@ class reticule:
       enemies=filter(lambda g:((g.tier==gangster.Tier.Rooftops)),gang.badguys)
     else:
       enemies=[]
-      print "Someone made a mistake implementing tiers."
+      print ("Someone made a mistake implementing tiers.")
     for jerk in enemies:
       jerk.aware=True
 

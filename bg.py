@@ -38,7 +38,7 @@ class bg:
   def is_falling(self,x,y):
     if self.is_stairs(x,y):
       return False
-    image=self.image_set[x/200]
+    image=self.image_set[x//200]
     x=x%200
     y=y+70 #Hit with your feet, not with your head
     x=x+25
@@ -63,7 +63,7 @@ class bg:
       x=0
     if x>799:
       x=799
-    image=self.image_set[x/200]
+    image=self.image_set[x//200]
     x=x%200
     y=y+70 #Hit with your feet, not with your head
     x=x+25
@@ -113,7 +113,7 @@ class bg:
       return Location.Wall
     elif y>496: #sewer floor
       return Location.Floor
-    image=self.image_set[x/200]
+    image=self.image_set[x//200]
     x=x%200
     if image==0:
       if y<350 and y>80 and x>70 and x<200:

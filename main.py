@@ -101,6 +101,8 @@ def game_loop():
           if ret.heartJump(gang):
             background.splatter(ret.target.x,ret.target.y)
             ret.findTarget(gang)
+        if event.key == K_ESCAPE:
+            sys.exit()
 
       elif event.type == KEYUP:
       #move reticule between enemies
